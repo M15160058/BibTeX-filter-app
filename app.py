@@ -3,25 +3,42 @@ import streamlit as st
 import re
 
 def filter_bibtex(entry, fields):
+    """
+    Filters a BibTeX entry to include only the specified fields.
+    Supports multi-line values and both {value} and "value" styles.
+    """
+    # Extract entry type and citation key
     header_match = re.match(r'@(\w+)\{([^,]+),', entry)
     if not header_match:
         return "Invalid BibTeX entry"
     entry_type, citation_key = header_match.groups()
     
+    # Regex to match both {value} and "value", multi-line
+    pattern = r'(\w+)\s*=\s*(?:\{(.*?)\}|"(.+?)")(?:,|$)'
+    matches = re.findall(pattern, entry, re.DOTALL)
+    
+    # Build dictionary with cleaned values
+    bib_dict = {}
+    for key, val1, val2 in matches:
+        value = val1 if val1 else val2
+        # Replace newlines with spaces and strip
+        value = re.sub(r'\s+', ' ', value.strip())
+        bib_dict[key] = value
+    
+    # Build filtered BibTeX string
     filtered_fields = []
     for field in fields:
-        pattern = rf'{field}\s*=\s*\{{(.*?)\}},?'
-        match = re.search(pattern, entry, re.DOTALL)
-        if match:
-            value = match.group(1).strip()
-            filtered_fields.append(f'  {field}={{ {value} }}')
+        if field in bib_dict:
+            filtered_fields.append(f"  {field}={{ {bib_dict[field]} }}")
     
-    filtered_entry = f'@{entry_type}{{{citation_key},\n' + ',\n'.join(filtered_fields) + '\n}'
-    filtered_entry = re.sub(r'\{\s+(.*?)\s+\}', r'{\1}', filtered_entry)
+    filtered_entry = f"@{entry_type}{{{citation_key},\n" + ",\n".join(filtered_fields) + "\n}}"
     return filtered_entry
 
+# ---------------------
+# Streamlit UI
+# ---------------------
 st.title("BibTeX Field Filter")
-# Author info with clickable link
+
 # Author info with clickable links
 st.markdown(
     """
@@ -31,12 +48,14 @@ st.markdown(
     """
 )
 
-
+# Input area for BibTeX
 bibtex_entry = st.text_area("Paste your BibTeX entry here:")
 
-all_fields = ["title", "author", "journal", "volume", "number", "pages", "year", "doi", "url", "issn", "keywords", "abstract"]
+# Fields options
+all_fields = ["title", "author", "editor", "journal", "volume", "number", "pages", "year", "doi", "url", "issn", "keywords", "abstract", "bookTitle", "publisher", "address"]
 fields_to_include = st.multiselect("Select fields to include:", options=all_fields, default=["title", "author", "journal", "volume", "number", "pages", "year"])
 
+# Button to generate
 if st.button("Generate Filtered BibTeX"):
     if bibtex_entry.strip() == "":
         st.warning("Please paste a BibTeX entry first.")
