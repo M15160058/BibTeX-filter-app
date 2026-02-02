@@ -24,7 +24,7 @@ st.title("BibTeX Field Filter")
 # Author info with clickable link
 st.markdown(
     "Developed by **Arif Hossin** – "
-    "[Linkedin Profile](https://www.linkedin.com/in/arif-hossin-7ab23952/)"
+    "[Linkedin Profile](https://www.linkedin.com/in/arif-hossin-7ab23952/)\n"
     "[GitHub Profile](https://github.com/M15160058)"
 )
 
