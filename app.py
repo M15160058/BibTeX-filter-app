@@ -21,6 +21,12 @@ def filter_bibtex(entry, fields):
     return filtered_entry
 
 st.title("BibTeX Field Filter")
+# Author info with clickable link
+st.markdown(
+    "Developed by **Arif Hossin** – "
+    "[Linkedin Profile](https://www.linkedin.com/in/arif-hossin-7ab23952/)"
+    "[GitHub Profile](https://github.com/M15160058)"
+)
 
 bibtex_entry = st.text_area("Paste your BibTeX entry here:")
 
