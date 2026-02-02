@@ -51,9 +51,33 @@ st.markdown(
 # Input area for BibTeX
 bibtex_entry = st.text_area("Paste your BibTeX entry here:")
 
+# Detect entry type to adjust default fields dynamically
+entry_type_match = re.match(r'@(\w+)\{', bibtex_entry.strip())
+if entry_type_match:
+    entry_type = entry_type_match.group(1).lower()
+else:
+    entry_type = "article"  # fallback
+
+# Default fields based on type
+if entry_type == "article":
+    default_fields = ["title", "author", "journal", "volume", "number", "pages", "year"]
+elif entry_type in ["book", "inbook"]:
+    default_fields = ["title", "author", "editor", "bookTitle", "publisher", "year", "pages"]
+elif entry_type in ["misc", "online", "website"]:
+    default_fields = ["title", "author", "year", "url"]
+else:
+    default_fields = ["title", "author", "year"]
+
 # Fields options
-all_fields = ["title", "author", "editor", "journal", "volume", "number", "pages", "year", "doi", "url", "issn", "keywords", "abstract", "bookTitle", "publisher", "address"]
-fields_to_include = st.multiselect("Select fields to include:", options=all_fields, default=["title", "author", "journal", "volume", "number", "pages", "year"])
+all_fields = ["title", "author", "editor", "journal", "volume", "number", "pages", 
+              "year", "doi", "url", "issn", "keywords", "abstract", "bookTitle", 
+              "publisher", "address"]
+
+fields_to_include = st.multiselect(
+    "Select fields to include:", 
+    options=all_fields, 
+    default=default_fields
+)
 
 # Button to generate
 if st.button("Generate Filtered BibTeX"):
