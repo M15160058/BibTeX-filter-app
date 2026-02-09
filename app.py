@@ -8,33 +8,33 @@ def filter_bibtex(entry, fields):
     Supports multi-line values and both {value} and "value" styles.
     """
     # Extract entry type and citation key
-    header_match = re.match(r'@(\w+)\{([^,]+),', entry)
+   header_match = re.match(r'@(\w+)\{([^,]+),', entry)
     if not header_match:
         return "Invalid BibTeX entry"
+
     entry_type, citation_key = header_match.groups()
-    
-    # Regex to match both {value} and "value", multi-line
+
     pattern = r'(\w+)\s*=\s*(?:\{(.*?)\}|"(.+?)")(?:,|$)'
     matches = re.findall(pattern, entry, re.DOTALL)
-    
-    # Build dictionary with cleaned values
+
     bib_dict = {}
     for key, val1, val2 in matches:
         value = val1 if val1 else val2
-        # Replace newlines with spaces and strip
         value = re.sub(r'\s+', ' ', value.strip())
         bib_dict[key] = value
-    
-    # Build filtered BibTeX string
+
     filtered_fields = []
     for field in fields:
         if field in bib_dict:
-            filtered_fields.append(f"  {field}={{{bib_dict[field]}}")
-    
-    filtered_entry = f"@{entry_type}{{{citation_key},\n" + ",\n".join(filtered_fields) + "\n}"
+            filtered_fields.append(f"  {field}={{{bib_dict[field]}}}")
+
+    filtered_entry = (
+        f"@{entry_type}{{{citation_key},\n"
+        + ",\n".join(filtered_fields)
+        + "\n}"
+    )
 
     return filtered_entry
-
 # ---------------------
 # Streamlit UI
 # ---------------------
