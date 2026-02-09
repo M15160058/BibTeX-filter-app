@@ -32,6 +32,7 @@ def filter_bibtex(entry, fields):
             filtered_fields.append(f"  {field}={{{bib_dict[field]}}")
     
     filtered_entry = f"@{entry_type}{{{citation_key},\n" + ",\n".join(filtered_fields) + "\n}"
+
     return filtered_entry
 
 # ---------------------
