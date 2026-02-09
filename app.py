@@ -26,13 +26,17 @@ def filter_bibtex(entry, fields):
         bib_dict[key] = value
     
     # Build filtered BibTeX string
+   
     filtered_fields = []
     for field in fields:
         if field in bib_dict:
-            filtered_fields.append(f"  {field}={{{bib_dict[field]}}}")
+            # Triple braces: {{ for literal {, {var} for value, }} for literal }
+            filtered_fields.append(f"  {field} = {{{bib_dict[field]}}}")
     
-    filtered_entry = f"@{entry_type}{{{citation_key},\n" + ",\n".join(filtered_fields) + "\n}"
-    return filtered_entry
+    body = ",\n".join(filtered_fields)
+    
+    # Return using a clean multiline-style f-string
+    return f"@{entry_type}{{{citation_key},\n{body}\n}}"
 
 # ---------------------
 # Streamlit UI
