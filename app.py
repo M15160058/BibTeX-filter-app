@@ -31,7 +31,7 @@ def filter_bibtex(entry, fields):
         if field in bib_dict:
             filtered_fields.append(f"  {field}={{{bib_dict[field]}}}")
     
-    filtered_entry = f"@{entry_type}{{{citation_key},\n" + ",\n".join(filtered_fields) + "\n}"
+    filtered_entry = f"@{entry_type}{{{citation_key},\n" + ",\n".join(filtered_fields) + "\n}}"
     return filtered_entry
 
 # ---------------------
@@ -85,12 +85,4 @@ if st.button("Generate Filtered BibTeX"):
         st.warning("Please paste a BibTeX entry first.")
     else:
         filtered = filter_bibtex(bibtex_entry, fields_to_include)
-        st.code(filtered) output:@article{IMPROTA1996323,
-  title={Immunoglobulin-like modules from titin I-band: extensible components of muscle elasticity},
-  author={Sabina Improta and Anastasia S Politou and Annalisa Pastore},
-  journal={Structure},
-  volume={4},
-  number={3},
-  pages={323-337},
-  year={1996}
-}} 
+        st.code(filtered)
